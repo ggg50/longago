@@ -19,8 +19,9 @@ class EventHandler {
         return this.innerText;
     }
     set text(value) {
-        this.parseText();
         this.innerText = value;
+        this.parseText();
+        this.innerWriteFile();
     }
     init() {
         this.innerReadFile()
@@ -52,14 +53,12 @@ class EventHandler {
         this.text = date
             ? this.text.replace(new RegExp(text + '-' + date + '\n?'), '')
             : this.text.replace(new RegExp(text + '\n?'), '');
-        this.innerWriteFile();
     }
     // text: can be 'event-date' or 'event' and 'date'
     addEvent(text, date) {
         this.text = date
             ? this.text + '\n' + text + '-' + date
             : this.text + '\n' + text;
-        this.innerWriteFile();
     }
     innerReadFile() {
         return new Promise((resolve, reject) => {

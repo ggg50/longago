@@ -5,13 +5,13 @@ const commander = require("commander");
 const main_1 = require("./main");
 const inquirer = require("inquirer");
 const moment = require("moment");
-let eventHandler = new main_1.default();
+let handler = new main_1.default();
 let newEvent;
-eventHandler.onReady(() => {
+handler.onReady(() => {
     const program = new commander.Command();
     program
-        .version('0.0.1')
-        .name('howLong')
+        .version('0.0.2')
+        .name('longago')
         .usage('[keyword]')
         .arguments('[keyword]')
         .option('-f, --full', 'full message')
@@ -20,42 +20,43 @@ eventHandler.onReady(() => {
         .option('-d, --delete', 'delete event')
         .action(function (keyword) {
         // if(keyword){
-        eventHandler.findItemsAndPrint(keyword);
+        // common search and print
+        handler.findItemsAndPrint(keyword);
         // }
     });
     program.parse(process.argv);
     if (program.add) {
-        promptAdd(eventHandler)
+        promptAdd()
             .then(item => {
-            handleAdd(eventHandler, item);
+            handleAdd(item);
         });
     }
     if (program.delete) {
-        chooseEvent(eventHandler)
+        chooseEvent()
             .then(event => {
             console.log(`Event: ${event} will be delete`);
             promptConfirm()
                 .then(() => {
-                handleDelete(eventHandler, event);
+                handleDelete(event);
             })
                 .catch(e => console.log(e));
         });
     }
     if (program.update) {
-        chooseEvent(eventHandler)
+        chooseEvent()
             .then(oldEvent => {
             console.log('Now input one new event');
-            promptAdd(eventHandler, [getEventName(oldEvent)])
+            promptAdd([getEventName(oldEvent)])
                 .then(newItem => {
                 const newEvent = newItem.event + '-' + newItem.date;
-                handleUpdate(eventHandler, newEvent, oldEvent);
+                handleUpdate(newEvent, oldEvent);
             });
         })
             .catch(e => console.log(e));
     }
 });
 // escapeList: a list of needn't check events
-function promptAdd(handler, escapeList = []) {
+function promptAdd(escapeList = []) {
     return new Promise((resolve, reject) => {
         const questions = [
             {
@@ -89,7 +90,7 @@ function promptAdd(handler, escapeList = []) {
         });
     });
 }
-function chooseEvent(handler) {
+function chooseEvent() {
     return new Promise((resolve, reject) => {
         const questions = [
             {
@@ -142,16 +143,16 @@ function promptConfirm() {
             .catch(e => reject(e));
     });
 }
-function handleAdd(handler, item) {
+function handleAdd(item) {
     const { event, date } = item;
     handler.addEvent(event, date);
     console.log('Add completely!!!');
 }
-function handleDelete(handler, item) {
+function handleDelete(item) {
     handler.deleteEvent(item);
     console.log('Delete completely!!!');
 }
-function handleUpdate(handler, newEvent, oldEvent) {
+function handleUpdate(newEvent, oldEvent) {
     handler.updateEvent(newEvent, oldEvent);
     console.log(`${oldEvent} has update to ${newEvent} completely!!!`);
 }

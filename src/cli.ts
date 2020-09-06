@@ -3,17 +3,16 @@ import * as commander from 'commander'
 import EventHandler, { EventItem } from './main'
 import * as inquirer from 'inquirer'
 import * as moment from 'moment'
-import { rejects } from 'assert'
 
-let eventHandler = new EventHandler()
+let handler = new EventHandler()
 let newEvent: EventItem
 
-eventHandler.onReady(() => {
+handler.onReady(() => {
   const program = new commander.Command()
 
   program
-    .version('0.0.1')
-    .name('howLong')
+    .version('0.0.2')
+    .name('longago')
     .usage('[keyword]')
     .arguments('[keyword]')
     .option('-f, --full', 'full message')
@@ -22,7 +21,8 @@ eventHandler.onReady(() => {
     .option('-d, --delete', 'delete event')
     .action(function (keyword) {
       // if(keyword){
-        eventHandler.findItemsAndPrint(keyword)
+        // common search and print
+        handler.findItemsAndPrint(keyword)
       // }
     });
 
@@ -30,33 +30,33 @@ eventHandler.onReady(() => {
 
 
   if(program.add) {
-    promptAdd(eventHandler)
+    promptAdd()
     .then(item => {
-      handleAdd(eventHandler, item)
+      handleAdd(item)
     })
   }
 
   if(program.delete) {
-    chooseEvent(eventHandler)
+    chooseEvent()
       .then(event => {
         console.log(`Event: ${event} will be delete`)
 
         promptConfirm()
         .then(() => {
-          handleDelete(eventHandler, event)
+          handleDelete(event)
         })
         .catch(e => console.log(e))
       })
   }
 
   if(program.update) {
-    chooseEvent(eventHandler)
+    chooseEvent()
       .then( oldEvent => {
         console.log('Now input one new event')
-        promptAdd(eventHandler, [getEventName(oldEvent)])
+        promptAdd([getEventName(oldEvent)])
           .then(newItem => {
             const newEvent = newItem.event + '-' + newItem.date
-            handleUpdate(eventHandler, newEvent, oldEvent)
+            handleUpdate(newEvent, oldEvent)
           })
       })
       .catch(e => console.log(e))
@@ -64,7 +64,7 @@ eventHandler.onReady(() => {
 })
 
 // escapeList: a list of needn't check events
-function promptAdd(handler: EventHandler, escapeList: string[] = []): Promise<EventItem> {
+function promptAdd( escapeList: string[] = []): Promise<EventItem> {
   return new Promise((resolve, reject) => {
     const questions = [
       {
@@ -101,7 +101,7 @@ function promptAdd(handler: EventHandler, escapeList: string[] = []): Promise<Ev
   })
 }
 
-function chooseEvent(handler: EventHandler): Promise<string>{
+function chooseEvent(): Promise<string>{
   return new Promise((resolve, reject) => {
     const questions = [
       {
@@ -159,18 +159,18 @@ function promptConfirm(): Promise<void>{
   })
 }
 
-function handleAdd(handler: EventHandler, item: EventItem){
+function handleAdd( item: EventItem){
   const {event, date} = item
   handler.addEvent(event, date)
   console.log('Add completely!!!')
 }
 
-function handleDelete(handler: EventHandler, item: string){
+function handleDelete( item: string){
   handler.deleteEvent(item)
   console.log('Delete completely!!!')
 }
 
-function handleUpdate(handler: EventHandler, newEvent: string, oldEvent: string){
+function handleUpdate( newEvent: string, oldEvent: string){
   handler.updateEvent(newEvent, oldEvent)
   console.log(`${oldEvent} has update to ${newEvent} completely!!!`)
 }
