@@ -46,6 +46,7 @@ export default class EventHandler {
     this.findItems(keyword).forEach(this.printEvent)
   }
 
+  // generate eventNameList from eventList
   public parseText(){
     this.eventList =  this.text.split('\n').map(item => {
       const [event, date] = item.split('-')
@@ -63,17 +64,17 @@ export default class EventHandler {
     this.addEvent(newEvent)
   }
 
-  public deleteEvent(text: string, date?: string) {
-    this.text = date
-      ? this.text.replace(new RegExp(text + '-' + date + '\n?'), '')
-      : this.text.replace(new RegExp(text + '\n?'), '')
-  }
-
   // text: can be 'event-date' or 'event' and 'date'
   public addEvent(text: string, date?: string){
     this.text = date 
       ? this.text + '\n' + text + '-' + date
       : this.text + '\n' + text
+  }
+  
+  public deleteEvent(text: string, date?: string) {
+    this.text = date
+      ? this.text.replace(new RegExp(text + '-' + date + '\n?'), '')
+      : this.text.replace(new RegExp(text + '\n?'), '')
   }
 
   public innerReadFile(): Promise<string>{
@@ -127,6 +128,7 @@ export default class EventHandler {
     const year = Math.floor(distance / 31536000000)
     const day = Math.ceil((distance - 31536000000 * year) / 86400000)
     const totalDay = Math.ceil(distance / 86400000)
+
     console.log('-'.repeat(20))
     console.log(`事件: ${event}`)
     console.log(`时间: ${date}`)

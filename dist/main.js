@@ -35,6 +35,7 @@ class EventHandler {
     findItemsAndPrint(keyword) {
         this.findItems(keyword).forEach(this.printEvent);
     }
+    // generate eventNameList from eventList
     parseText() {
         this.eventList = this.text.split('\n').map(item => {
             const [event, date] = item.split('-');
@@ -49,16 +50,16 @@ class EventHandler {
         this.deleteEvent(oldEvent);
         this.addEvent(newEvent);
     }
-    deleteEvent(text, date) {
-        this.text = date
-            ? this.text.replace(new RegExp(text + '-' + date + '\n?'), '')
-            : this.text.replace(new RegExp(text + '\n?'), '');
-    }
     // text: can be 'event-date' or 'event' and 'date'
     addEvent(text, date) {
         this.text = date
             ? this.text + '\n' + text + '-' + date
             : this.text + '\n' + text;
+    }
+    deleteEvent(text, date) {
+        this.text = date
+            ? this.text.replace(new RegExp(text + '-' + date + '\n?'), '')
+            : this.text.replace(new RegExp(text + '\n?'), '');
     }
     innerReadFile() {
         return new Promise((resolve, reject) => {

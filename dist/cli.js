@@ -26,7 +26,7 @@ handler.onReady(() => {
     });
     program.parse(process.argv);
     if (program.add) {
-        promptAdd()
+        promptNewEvent()
             .then(item => {
             handleAdd(item);
         });
@@ -46,7 +46,7 @@ handler.onReady(() => {
         chooseEvent()
             .then(oldEvent => {
             console.log('Now input one new event');
-            promptAdd([getEventName(oldEvent)])
+            promptNewEvent([getEventName(oldEvent)])
                 .then(newItem => {
                 const newEvent = newItem.event + '-' + newItem.date;
                 handleUpdate(newEvent, oldEvent);
@@ -55,8 +55,8 @@ handler.onReady(() => {
             .catch(e => console.log(e));
     }
 });
-// escapeList: a list of needn't check events
-function promptAdd(escapeList = []) {
+// escapeList: a list of needn't check events name(without date message)
+function promptNewEvent(escapeList = []) {
     return new Promise((resolve, reject) => {
         const questions = [
             {
@@ -64,8 +64,6 @@ function promptAdd(escapeList = []) {
                 name: 'event',
                 message: "What happen …… :",
                 validate: function (value) {
-                    console.log(escapeList);
-                    console.log(value);
                     return !escapeList.includes(value) && handler.checkHasExit(value)
                         ? 'Event has exit!'
                         : true;
@@ -90,6 +88,7 @@ function promptAdd(escapeList = []) {
         });
     });
 }
+// ask user to choose one event
 function chooseEvent() {
     return new Promise((resolve, reject) => {
         const questions = [
