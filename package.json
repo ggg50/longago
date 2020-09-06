@@ -1,0 +1,26 @@
+{
+  "name": "longago",
+  "version": "0.0.2",
+  "description": "a simply tool to help you remember all important events",
+  "main": "dist/main.js",
+  "bin": {
+    "lago": "dist/cli.js"
+  },
+  "files": [
+    "dist/**/*.js"
+  ],
+  "scripts": {
+    "start": "ts-node-dev src/main.ts"
+  },
+  "author": "xiejiafeng",
+  "license": "MIT",
+  "dependencies": {
+    "@types/commander": "^2.12.2",
+    "@types/inquirer": "^7.3.1",
+    "@types/moment": "^2.13.0",
+    "@types/node": "^14.6.4",
+    "commander": "^6.1.0",
+    "inquirer": "^7.3.3",
+    "moment": "^2.27.0"
+  }
+}
